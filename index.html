@@ -26,30 +26,36 @@
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">CODE MATRIX</div>
-      <div class="matrix-wrap">
-        <svg id="pathOverlay" class="path-overlay" aria-hidden="true"></svg>
-        <div id="matrixGrid" class="matrix-grid size-6"></div>
+    <div class="main-layout">
+      <div class="left-panel">
+        <div class="section">
+          <div class="section-title">CODE MATRIX</div>
+          <div class="matrix-wrap">
+            <svg id="pathOverlay" class="path-overlay" aria-hidden="true"></svg>
+            <div id="matrixGrid" class="matrix-grid size-6"></div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="section">
-      <div class="section-title">TARGET SEQUENCES</div>
-      <textarea id="sequences" class="sequences-input" rows="3" placeholder="Enter sequences (one per line)">5 5
+      <div class="right-panel">
+        <div class="section">
+          <div class="section-title">TARGET SEQUENCES</div>
+          <textarea id="sequences" class="sequences-input" rows="3" placeholder="Enter sequences (one per line)">5 5
 5 7 B
 1 7 5</textarea>
-    </div>
+        </div>
 
-    <div class="buttons">
-      <button class="solve-btn" onclick="solve()">SOLVE</button>
-      <button class="clear-btn" onclick="clearAll()">CLEAR</button>
-      <button class="preset-btn" onclick="loadPreset()">LOAD PRESET</button>
-    </div>
+        <div class="buttons">
+          <button class="solve-btn" onclick="solve()">SOLVE</button>
+          <button class="clear-btn" onclick="clearAll()">CLEAR</button>
+          <button class="preset-btn" onclick="loadPreset()">LOAD PRESET</button>
+        </div>
 
-    <div class="section">
-      <div class="section-title">SOLUTION</div>
-      <div id="results" class="results"></div>
+        <div class="section">
+          <div class="section-title">SOLUTION</div>
+          <div id="results" class="results"></div>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -391,6 +391,20 @@ function solve() {
       output += `  ${i + 1}. Row ${r + 1}, Col ${c + 1} = ${code} (${dir})\n`;
     });
 
+    // Debug info for copy/paste
+    output += '\n' + '-'.repeat(45) + '\n';
+    output += 'DEBUG INFO (copy for troubleshooting):\n';
+    output += '-'.repeat(45) + '\n';
+    output += `Grid: ${matrix.length}x${matrix.length} | Buffer: ${bufferSize}\n\n`;
+    output += 'Matrix:\n';
+    matrix.forEach((row, i) => {
+      output += `  Row ${i + 1}: ${row.join(' ')}\n`;
+    });
+    output += '\nSequences:\n';
+    sequences.forEach((seq, i) => {
+      output += `  ${i + 1}. ${seq.join(' ')}\n`;
+    });
+
     results.innerHTML = `<span class="success">${output}</span>`;
     highlightPath(solution.path);
 
@@ -424,7 +438,7 @@ class BreachSolver {
     for (const target of targets) {
       if (target.buffer.length > this.bufferSize) continue;
 
-      const path = this.findPathForBuffer(target.buffer);
+      const path = this.findPathForBuffer(target.buffer, target.seqIndices);
       if (path) {
         const score = target.seqIndices.size;
         if (score > this.bestScore) {
@@ -505,30 +519,51 @@ class BreachSolver {
     return [...seq1, ...seq2];
   }
 
-  findPathForBuffer(targetBuffer) {
+  findPathForBuffer(targetBuffer, seqIndices) {
     const maxFiller = this.bufferSize - targetBuffer.length;
     for (let filler = 0; filler <= maxFiller; filler++) {
-      const path = this.searchPath(targetBuffer, filler);
+      const path = this.searchPath(targetBuffer, filler, seqIndices);
       if (path) return path;
     }
     return null;
   }
 
-  searchPath(targetBuffer, numFiller) {
+  searchPath(targetBuffer, numFiller, seqIndices) {
     for (let col = 0; col < this.gridSize; col++) {
       const result = this.dfsPath(
         targetBuffer, 0, numFiller, [[0, col]],
-        new Set([`0,${col}`]), false, this.matrix[0][col]
+        new Set([`0,${col}`]), false, this.matrix[0][col], seqIndices
       );
       if (result) return result;
     }
     return null;
   }
 
-  dfsPath(targetBuffer, targetIdx, fillerRemaining, path, visited, selectFromRow, currentCode) {
+  // Get first codes of sequences NOT in our target set (these can be accidentally triggered)
+  // NOTE: There's a rare edge case where a filler could trigger a TARGETED sequence early
+  // if used before that sequence's position in the buffer. A more robust fix would track
+  // completed sequences dynamically, but this handles the common case.
+  getForbiddenFillerCodes(seqIndices) {
+    const forbidden = new Set();
+    this.sequences.forEach((seq, i) => {
+      if (!seqIndices.has(i) && seq.length > 0) {
+        forbidden.add(seq[0]);
+      }
+    });
+    return forbidden;
+  }
+
+  dfsPath(targetBuffer, targetIdx, fillerRemaining, path, visited, selectFromRow, currentCode, seqIndices) {
     if (targetIdx < targetBuffer.length && currentCode === targetBuffer[targetIdx]) {
+      // Code matches next expected in target - advance
       targetIdx++;
     } else if (fillerRemaining > 0) {
+      // Want to use as filler - check if it would trigger an untargeted sequence
+      const forbidden = this.getForbiddenFillerCodes(seqIndices);
+      if (forbidden.has(currentCode)) {
+        // This filler would start a sequence we're not targeting - reject
+        return null;
+      }
       fillerRemaining--;
     } else {
       return null;
@@ -550,7 +585,8 @@ class BreachSolver {
           [...path, [r, c]],
           new Set([...visited, key]),
           !selectFromRow,
-          this.matrix[r][c]
+          this.matrix[r][c],
+          seqIndices
         );
         if (result) return result;
       }
