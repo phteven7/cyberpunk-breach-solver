@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Breach Protocol Solver - Cyberpunk 2077</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>BREACH PROTOCOL SOLVER</h1>
+    <p class="instructions">Input: 1=1C, 5=55, 7=7A, B=BD, E=E9, F=FF | Tab/Enter to advance</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Grid:</label>
+        <select id="gridSize" onchange="createGrid()">
+          <option value="5">5x5</option>
+          <option value="6" selected>6x6</option>
+          <option value="7">7x7</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Buffer:</label>
+        <input type="number" id="bufferSize" value="7" min="1" max="20" style="width:60px" />
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">CODE MATRIX</div>
+      <div class="matrix-wrap">
+        <svg id="pathOverlay" class="path-overlay" aria-hidden="true"></svg>
+        <div id="matrixGrid" class="matrix-grid size-6"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">TARGET SEQUENCES</div>
+      <textarea id="sequences" class="sequences-input" rows="3" placeholder="Enter sequences (one per line)">5 5
+5 7 B
+1 7 5</textarea>
+    </div>
+
+    <div class="buttons">
+      <button class="solve-btn" onclick="solve()">SOLVE</button>
+      <button class="clear-btn" onclick="clearAll()">CLEAR</button>
+      <button class="preset-btn" onclick="loadPreset()">LOAD PRESET</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">SOLUTION</div>
+      <div id="results" class="results"></div>
+    </div>
+  </div>
+
+  <script src="js/solver.js"></script>
+</body>
+</html>

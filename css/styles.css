@@ -1,0 +1,211 @@
+/* Cyberpunk 2077 Breach Protocol Solver - Styles */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Consolas', 'Courier New', monospace;
+  background: #0d0d1a;
+  color: #00ff9f;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container { max-width: 640px; margin: 0 auto; }
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1.6em;
+  text-shadow: 0 0 10px #00ff9f;
+}
+
+.instructions {
+  text-align: center;
+  color: #666;
+  font-size: 0.85em;
+  margin-bottom: 20px;
+}
+
+.section { margin-bottom: 20px; }
+
+.section-title {
+  font-size: 0.9em;
+  margin-bottom: 8px;
+  color: #00ff9f;
+}
+
+.controls { display: flex; gap: 20px; margin-bottom: 15px; }
+
+.control-group { display: flex; align-items: center; gap: 8px; }
+
+select, input[type="number"] {
+  background: #1a1a2e;
+  border: 1px solid #00ff9f;
+  color: #00ff9f;
+  padding: 5px 10px;
+  font-family: inherit;
+  font-size: 1em;
+}
+
+/* ================= GRID + OVERLAY ================= */
+
+.matrix-wrap { position: relative; }
+
+.matrix-grid {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
+}
+
+.matrix-grid.size-5 { grid-template-columns: repeat(5, 1fr); }
+.matrix-grid.size-6 { grid-template-columns: repeat(6, 1fr); }
+.matrix-grid.size-7 { grid-template-columns: repeat(7, 1fr); }
+
+.cell { position: relative; }
+
+/* Input remains the true value (1/5/7/B/E/F), but we show a visual label for 1C/55/etc */
+.cell-input {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #1a1a2e;
+  border: 1px solid #333;
+  color: transparent;            /* hide typed character visually */
+  caret-color: #00ff9f;          /* keep caret visible */
+  text-shadow: none;
+  font-family: inherit;
+  font-size: 1.3em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cell-input:focus {
+  border-color: #00ff9f;
+  outline: none;
+  box-shadow: 0 0 5px #00ff9f;
+}
+
+/* Visual code label (1C, 55, 7A, etc) */
+.code-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #00ff9f;
+  pointer-events: none;
+  opacity: 0.35;                 /* placeholder-ish */
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.cell.has-value .code-label {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Neon ring highlight instead of fill */
+.cell.is-path .cell-input {
+  border-color: rgba(0,255,159,0.95);
+  box-shadow:
+    inset 0 0 0 3px rgba(0,255,159,0.95),
+    0 0 12px rgba(0,255,159,0.30);
+}
+
+/* Start cell emphasis */
+.cell.is-start .cell-input {
+  box-shadow:
+    inset 0 0 0 4px rgba(0,255,159,1),
+    0 0 18px rgba(0,255,159,0.45);
+}
+
+/* End cell emphasis */
+.cell.is-end .cell-input {
+  box-shadow:
+    inset 0 0 0 3px rgba(0,255,159,0.95),
+    0 0 14px rgba(233,69,96,0.45);
+}
+
+/* Step badge */
+.step-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 0.7em;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: #00ff9f;
+  color: #0d0d1a;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(0,255,159,0.35);
+  display: none;
+  z-index: 5;
+  user-select: none;
+  pointer-events: none;
+}
+
+.cell.is-path .step-badge { display: block; }
+
+/* SVG arrows overlay (above grid, but soft/transparent) */
+.path-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ================= UI ================= */
+
+.sequences-input {
+  width: 100%;
+  background: #1a1a2e;
+  border: 1px solid #333;
+  color: #00ff9f;
+  font-family: inherit;
+  font-size: 1em;
+  padding: 10px;
+  resize: vertical;
+}
+
+.sequences-input:focus { border-color: #00ff9f; outline: none; }
+
+.buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+
+button {
+  flex: 1;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.solve-btn { background: #00ff9f; color: #0d0d1a; }
+.solve-btn:hover { box-shadow: 0 0 15px #00ff9f; }
+
+.clear-btn { background: #e94560; color: #fff; }
+.clear-btn:hover { box-shadow: 0 0 15px #e94560; }
+
+.preset-btn { background: #3a86ff; color: #fff; }
+.preset-btn:hover { box-shadow: 0 0 15px #3a86ff; }
+
+.results {
+  background: #1a1a2e;
+  border: 1px solid #333;
+  padding: 15px;
+  min-height: 200px;
+  white-space: pre-wrap;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.success { color: #00ff9f; }
+.error { color: #e94560; }
